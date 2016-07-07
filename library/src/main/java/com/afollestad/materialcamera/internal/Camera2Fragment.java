@@ -289,6 +289,9 @@ public class Camera2Fragment extends BaseCameraFragment implements View.OnClickL
                     }
                 }
             }
+            
+            // give no fucks, use the back camera
+            mInterface.setCameraPosition(CAMERA_POSITION_BACK);
 
             // Choose the sizes for camera preview and video recording
             CameraCharacteristics characteristics = manager.getCameraCharacteristics((String) mInterface.getCurrentCameraId());
