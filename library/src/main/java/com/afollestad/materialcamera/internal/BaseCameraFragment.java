@@ -72,6 +72,16 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
                 mPositionHandler.postDelayed(this, 1000);
         }
     };
+    
+    protected Handler mDelayHandler;
+    private final Runnable mDelayUpdater = new Runnable() {
+        @Override
+        public void run() {
+            
+            if (mDelayHandler != null)
+                mDelayHandler.postDelayed(this, 1000);
+        }
+    };
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,6 +114,8 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
 
         if (savedInstanceState != null)
             mOutputUri = savedInstanceState.getString("output_uri");
+        
+        mDelayCounter = (TextView) view.findViewById(R.id.delayCounter);
             
         mDelayDisplay = (TextView) view.findViewById(R.id.delayDisplay);
         mDelayDisplay.setText("Delay: " + delay + "s");
@@ -166,10 +178,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         mInterface = null;
     }
 
-    public final void startCounter() {
-        mRecordDuration.setVisibility(View.VISIBLE);
-        mDelayDisplay.setVisibility(View.GONE);
-        
+    public final void startCounter() {        
         if (mPositionHandler == null)
             mPositionHandler = new Handler();
         else mPositionHandler.removeCallbacks(mPositionUpdater);
@@ -214,6 +223,14 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     }
 
     public boolean startRecordingVideo() {
+        mDelayDisplay.setVisibility(View.GONE);
+        mDelayCounter.setVisibility(View.VISIBLE);
+    }
+    
+    public boolean afterDelayStartRecording()
+    {
+        mRecordDuration.setVisibility(View.VISIBLE);
+        
         if (mInterface != null && mInterface.hasLengthLimit() && !mInterface.countdownImmediately()) {
             // Countdown wasn't started in onResume, start it now
             if (mInterface.getRecordingStart() == -1)
@@ -224,8 +241,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         final int orientation = Degrees.getActivityOrientation(getActivity());
         //noinspection ResourceType
         getActivity().setRequestedOrientation(orientation);
-        mInterface.setDidRecord(true);
-        return true;
+        mInterface.setDidRecord(true);        
     }
 
     public void stopRecordingVideo(boolean reachedZero) {
@@ -274,12 +290,12 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                    mIsRecording = startRecordingVideo();
+                                    startRecordingVideo();
                                 }
                             })
                             .show();
                 } else {
-                    mIsRecording = startRecordingVideo();
+                    startRecordingVideo();
                 }
             }
         } else if (view.getId() == R.id.delayDisplay)
