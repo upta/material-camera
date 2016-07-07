@@ -107,6 +107,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
             
         mDelayDisplay = (TextView) view.findViewById(R.id.delayDisplay);
         mDelayDisplay.setText("Delay: " + delay + "s");
+        mDelayDisplay.setOnClickListener(this);
     }
 
     @Override
