@@ -166,6 +166,9 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     }
 
     public final void startCounter() {
+        mRecordDuration.setVisibility(View.VISIBLE);
+        mDelayDisplay.setVisibility(View.GONE);
+        
         if (mPositionHandler == null)
             mPositionHandler = new Handler();
         else mPositionHandler.removeCallbacks(mPositionUpdater);
@@ -278,6 +281,26 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
                     mIsRecording = startRecordingVideo();
                 }
             }
+        } else if (view.getId() == R.id.delayDisplay)
+        {
+            if (delay == 0)
+            {
+                delay = 5;
+            }
+            else if (delay == 5)
+            {
+                delay = 10;
+            }
+            else if (delay == 10)
+            {
+                delay = 20;
+            }
+            else if (delay == 20)
+            {
+                delay = 0;
+            }
+            
+            mDelayDisplay.setText("Delay: " + delay + "s");
         }
     }
 }
