@@ -258,7 +258,7 @@ public class Camera2Fragment extends BaseCameraFragment implements View.OnClickL
                     //noinspection ConstantConditions
                     int facing = characteristics.get(CameraCharacteristics.LENS_FACING);
                     if (facing == CameraCharacteristics.LENS_FACING_FRONT)
-                        mInterface.setFrontCamera(cameraId);DEFAULT_TO_FRONT_FACING
+                        mInterface.setFrontCamera(cameraId);
                     else if (facing == CameraCharacteristics.LENS_FACING_BACK)
                         mInterface.setBackCamera(cameraId);
                 }
