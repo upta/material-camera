@@ -35,7 +35,10 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     protected ImageButton mButtonVideo;
     protected ImageButton mButtonFacing;
     protected TextView mRecordDuration;
+    protected TextView mDelayDisplay;
 
+    private int currentDelay = 0;
+    private int delay = 0;
     private boolean mIsRecording;
     protected String mOutputUri;
     protected BaseCaptureInterface mInterface;
@@ -101,6 +104,9 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
 
         if (savedInstanceState != null)
             mOutputUri = savedInstanceState.getString("output_uri");
+            
+        mDelayDisplay = (TextView) view.findViewById(R.id.delayDisplay);
+        mDelayDisplay.setText("Delay: " + delay + "s");
     }
 
     @Override

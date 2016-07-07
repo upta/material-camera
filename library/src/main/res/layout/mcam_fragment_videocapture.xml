@@ -55,6 +55,16 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/mcam_defaultDuration"
             android:textColor="#fff"
+            android:textSize="@dimen/mcam_regular_content_fontsize"
+            android:visibility="gone" />
+            
+        <TextView
+            android:id="@+id/delayDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#fff"
             android:textSize="@dimen/mcam_regular_content_fontsize" />
 
     </FrameLayout>
