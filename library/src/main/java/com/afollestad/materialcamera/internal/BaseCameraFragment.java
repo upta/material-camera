@@ -35,11 +35,13 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     protected ImageButton mButtonVideo;
     protected ImageButton mButtonFacing;
     protected TextView mRecordDuration;
-    protected TextView mDelayCounter;
     protected TextView mDelayDisplay;
 
     private int currentDelay = 0;
     private int delay = 0;
+    private long delayStart = -1;
+    private long delayEnd = -1;
+    
     private boolean mIsRecording;
     protected String mOutputUri;
     protected BaseCaptureInterface mInterface;
@@ -78,6 +80,20 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     private final Runnable mDelayUpdater = new Runnable() {
         @Override
         public void run() {
+            final long now = System.currentTimeMillis();
+            
+            if (now >= delayEnd)
+            {
+                mDelayCounter.setVisibility(View.GONE);
+                stopDelayCounter();
+                
+                mIsRecording = startRecordingVideo();
+            }
+            else
+            {
+                final long diff = delayEnd - now;
+                mDelayCounter.setText(String.format("%", CameraUtil.getDurationString(diff)));
+            }
             
             if (mDelayHandler != null)
                 mDelayHandler.postDelayed(this, 1000);
@@ -185,6 +201,13 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         else mPositionHandler.removeCallbacks(mPositionUpdater);
         mPositionHandler.post(mPositionUpdater);
     }
+    
+    public final void startDelayCounter() {        
+        if (mDelayHandler == null)
+            mDelayHandler = new Handler();
+        else mDelayHandler.removeCallbacks(mDelayUpdater);
+        mDelayHandler.post(mDelayUpdater);
+    }
 
     @BaseCaptureActivity.CameraPosition
     public final int getCurrentCameraPosition() {
@@ -202,6 +225,13 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         if (mPositionHandler != null) {
             mPositionHandler.removeCallbacks(mPositionUpdater);
             mPositionHandler = null;
+        }
+    }
+    
+    public final void stopDelayCounter() {
+        if (mDelayHandler != null) {
+            mDelayHandler.removeCallbacks(mDelayUpdater);
+            mDelayHandler = null;
         }
     }
 
@@ -222,16 +252,25 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
             mMediaRecorder = null;
         }
     }
-
-    public void startRecordingVideo() {
-        mDelayDisplay.setVisibility(View.GONE);
-        mDelayCounter.setVisibility(View.VISIBLE);
-    }
     
-    public void afterDelayStartRecording()
+    public void delayStartRecording()
     {
-        mRecordDuration.setVisibility(View.VISIBLE);
-        
+        if (delay == 0)
+        {
+            mIsRecording = startRecordingVideo();
+        }
+        else
+        {
+            delayStart = System.currentTimeMillis();
+            delayEnd = delayStart + delay * 1000;
+            
+            mDelayCounter.setVisibility(View.VISIBLE);
+            
+            startDelayCounter();
+        }
+    }
+
+    public boolean startRecordingVideo() {
         if (mInterface != null && mInterface.hasLengthLimit() && !mInterface.countdownImmediately()) {
             // Countdown wasn't started in onResume, start it now
             if (mInterface.getRecordingStart() == -1)
@@ -242,9 +281,8 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         final int orientation = Degrees.getActivityOrientation(getActivity());
         //noinspection ResourceType
         getActivity().setRequestedOrientation(orientation);
-        mInterface.setDidRecord(true);    
-        
-        mIsRecording = true;    
+        mInterface.setDidRecord(true);
+        return true;
     }
 
     public void stopRecordingVideo(boolean reachedZero) {
@@ -293,12 +331,12 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                    startRecordingVideo();
+                                    delayStartRecording();
                                 }
                             })
                             .show();
                 } else {
-                    startRecordingVideo();
+                    delayStartRecording();
                 }
             }
         } else if (view.getId() == R.id.delayDisplay)
