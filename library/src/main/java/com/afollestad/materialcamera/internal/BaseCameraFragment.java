@@ -35,6 +35,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
     protected ImageButton mButtonVideo;
     protected ImageButton mButtonFacing;
     protected TextView mRecordDuration;
+    protected TextView mDelayCounter;
     protected TextView mDelayDisplay;
 
     private int currentDelay = 0;
