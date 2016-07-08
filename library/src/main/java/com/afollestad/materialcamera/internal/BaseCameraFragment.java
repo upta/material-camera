@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.media.ToneGenerator;
+import android.media.AudioManager;
 
 import com.afollestad.materialcamera.MaterialCamera;
 import com.afollestad.materialcamera.R;
