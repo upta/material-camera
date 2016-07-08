@@ -103,7 +103,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
                 long diff = delayEnd - now;
                 diff = (diff / 1000);
                 
-                mDelayCounter.setText(String.valueOf(diff));
+                mDelayCounter.setText(String.valueOf(diff + 1));
             }
             
             if (mDelayHandler != null)
