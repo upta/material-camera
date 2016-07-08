@@ -87,6 +87,11 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
             {
                 mDelayCounter.setVisibility(View.GONE);
                 mButtonVideo.setVisibility(View.VISIBLE);
+                mRecordDuration.setVisibility(View.VISIBLE);
+                
+                ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200); 
+                
                 stopDelayCounter();
                 
                 mIsRecording = startRecordingVideo();
@@ -100,7 +105,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
             }
             
             if (mDelayHandler != null)
-                mDelayHandler.postDelayed(this, 1000);
+                mDelayHandler.postDelayed(this, 500);
         }
     };
 
