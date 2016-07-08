@@ -86,6 +86,7 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
             if (now >= delayEnd)
             {
                 mDelayCounter.setVisibility(View.GONE);
+                mButtonVideo.setVisibility(View.VISIBLE);
                 stopDelayCounter();
                 
                 mIsRecording = startRecordingVideo();
@@ -265,7 +266,8 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         else
         {
             mDelayDisplay.setVisibility(View.GONE);
-            mDelayDisplay.setVisibility(View.GONE);
+            mButtonVideo.setVisibility(View.GONE);
+            mButtonFacing.setVisibility(View.GONE);
             
             delayStart = System.currentTimeMillis();
             delayEnd = delayStart + delay * 1000;
