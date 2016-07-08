@@ -223,12 +223,12 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         }
     }
 
-    public boolean startRecordingVideo() {
+    public void startRecordingVideo() {
         mDelayDisplay.setVisibility(View.GONE);
         mDelayCounter.setVisibility(View.VISIBLE);
     }
     
-    public boolean afterDelayStartRecording()
+    public void afterDelayStartRecording()
     {
         mRecordDuration.setVisibility(View.VISIBLE);
         
@@ -242,7 +242,9 @@ abstract class BaseCameraFragment extends Fragment implements CameraUriInterface
         final int orientation = Degrees.getActivityOrientation(getActivity());
         //noinspection ResourceType
         getActivity().setRequestedOrientation(orientation);
-        mInterface.setDidRecord(true);        
+        mInterface.setDidRecord(true);    
+        
+        mIsRecording = true;    
     }
 
     public void stopRecordingVideo(boolean reachedZero) {
